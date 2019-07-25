@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-//import { DatePipe, formatDate } from '@angular/common';
-import { Cliente } from './cliente';
+import { Cliente } from '../models/cliente.model';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { map, catchError, tap } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
@@ -10,7 +9,7 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class ClienteService {
-  private urlEndPoint: string = 'http://localhost:8080/api/clientes';
+  private urlEndPoint = 'http://localhost:8080/api/clientes';
 
   private httpHeaders = new HttpHeaders({ 'Content-Type': 'application/json' });
 
@@ -19,27 +18,20 @@ export class ClienteService {
   getClientes(): Observable<Cliente[]> {
     return this.http.get(this.urlEndPoint).pipe(
       tap(response => {
-        let clientes = response as Cliente[];
-        console.log('ClienteService: tap 1');
+        const clientes = response as Cliente[];
         clientes.forEach(cliente => {
-          console.log(cliente.nombre);
         });
       }),
       map(response => {
-        let clientes = response as Cliente[];
+        const clientes = response as Cliente[];
         return clientes.map(cliente => {
           cliente.nombre = cliente.nombre.toUpperCase();
-          //let datePipe = new DatePipe('es');
-          //cliente.createAt = datePipe.transform(cliente.createAt, 'EEEE dd, MMMM yyyy');
-          //cliente.createAt = formatDate(cliente.createAt, 'dd-MM-yyyy', 'es');
           return cliente;
         });
       }
       ),
       tap(response => {
-        console.log('ClienteService: tap 2');
         response.forEach(cliente => {
-          console.log(cliente.nombre);
         });
       })
     );

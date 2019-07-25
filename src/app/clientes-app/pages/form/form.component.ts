@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Cliente } from './cliente';
-import { ClienteService } from './cliente.service';
+import { Cliente } from '../../../models/cliente.model';
+import { ClienteService } from '../../../services/cliente.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import swal from 'sweetalert2';
 
@@ -11,7 +11,7 @@ import swal from 'sweetalert2';
 export class FormComponent implements OnInit {
 
   private cliente: Cliente = new Cliente();
-  titulo: string = "Crear Cliente";
+  titulo = 'Crear Cliente';
 
   errores: string[];
 
@@ -25,19 +25,20 @@ export class FormComponent implements OnInit {
 
   cargarCliente(): void {
     this.activatedRoute.params.subscribe(params => {
-      let id = params['id'];
+      const id = params['id'];
       if (id) {
         this.clienteService.getCliente(id).subscribe((cliente) => this.cliente = cliente);
       }
-    })
+    });
   }
 
   create(): void {
     this.clienteService.create(this.cliente)
       .subscribe(
         cliente => {
+          console.log(cliente);
           this.router.navigate(['/clientes']);
-          swal('Nuevo cliente', `El cliente ${cliente.nombre} ha sido creado con éxito`, 'success');
+          swal('Nuevo cliente', `El cliente ha sido creado con éxito`, 'success');
         },
         err => {
           this.errores = err.error.errors as string[];
@@ -59,7 +60,7 @@ export class FormComponent implements OnInit {
           console.error('Código del error desde el backend: ' + err.status);
           console.error(err.error.errors);
         }
-      )
+      );
   }
 
 }
